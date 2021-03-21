@@ -1,4 +1,5 @@
 from scrapy.http import Request
+from scrapy.shell import inspect_response
 import traceback
 import scrapy
 
@@ -18,11 +19,11 @@ class SearchSpider(scrapy.Spider):
       self.start_urls = [kwargs.get('start_url')] 
 
     def parse(self, response):
-
+        inspect_response(response,self)
         for article in response.css('.gs_r.gs_or.gs_scl'):
             data = dict()
             for k, v in self.css_rules.items():
-                data[k]=''.join(article.css(v).getall())
+                data[k]=''.join(article.css(v).getall()).replace('\n', '')
                 if k == 'authors-publicator-domain':
                     try:
                         split_data = data[k].split('-')
